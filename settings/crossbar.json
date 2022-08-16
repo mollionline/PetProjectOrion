@@ -1,0 +1,88 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "realms": [{
+                "name": "ami",
+                "roles": [{
+                        "name": "private",
+                        "permissions": [{
+                            "uri": "",
+                            "match": "prefix",
+                            "allow": {
+                                "call": true,
+                                "register": true,
+                                "publish": true,
+                                "subscribe": true
+                            },
+                            "disclose": {
+                                "caller": false,
+                                "publisher": false
+                            },
+                            "cache": true
+                        }]
+                    },
+                    {
+                        "name": "public",
+                        "permissions": [{
+                            "uri": "",
+                            "match": "prefix",
+                            "allow": {
+                                "call": true,
+                                "register": true,
+                                "publish": true,
+                                "subscribe": true
+                            },
+                            "disclose": {
+                                "caller": true,
+                                "publisher": true
+                            },
+                            "cache": true
+                        }]
+                    }
+                ]
+            }],
+            "transports": [
+                {
+                    "type": "websocket",
+                    "url": "ws://0.0.0.0:8989/public",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8989
+                    },
+                    "auth": {
+                        "ticket": {
+                            "type": "dynamic",
+                            "authenticator": "com.orionm2m.light.api.v1.auth"
+                        }
+                    }
+                },
+                {
+                    "type": "websocket",
+                    "url": "ws://0.0.0.0:8765/private",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8765
+                    },
+                    "auth": {
+                        "ticket": {
+                            "type": "static",
+                            "principals": {
+                                "AMI": {
+                                    "role": "private",
+                                    "ticket": "secret"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

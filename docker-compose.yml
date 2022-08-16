@@ -1,0 +1,87 @@
+version: '3'
+services:
+#    backend:
+#      build:
+#        context: .
+#        dockerfile: Dockerfile
+#      volumes:
+#        - .:/source
+#      depends_on:
+#        - db
+#        - redis
+#        - crossbar
+#        - rabbitmq
+    db:
+        image: timescale/timescaledb-postgis:2.3.0-pg13
+        ports:
+          - '5432:5432/tcp'
+        environment:
+            POSTGRES_USER: 'master'
+            POSTGRES_PASSWORD: 'secret'
+            POSTGRES_DATABASE: 'master'
+        restart: always
+        links:
+            - redis
+            - rabbitmq
+
+        volumes:
+            - './data:/data'
+
+    redis:
+        image: bitnami/redis:6.2
+        ports:
+            - '6379:6379'
+        environment:
+            REDIS_PASSWORD: 'secret'
+            ALLOW_EMPTY_PASSWORD: 'yes'
+            REDIS_AOF_ENABLED: 'no'
+        volumes:
+            - './data/redis-persistence:/bitnami/redis/data'
+        restart: always
+
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+            - "5672:5672/tcp"
+            - "15672:15672/tcp"
+        restart: always
+
+    crossbar:
+            image: crossbario/crossbar
+            restart: always
+            volumes:
+              - ./settings/crossbar.json:/node/.crossbar/config.json
+            ports:
+              - 8765:8765
+              - 8989:8989
+
+    # gql:
+    #     image: hasura/graphql-engine:latest
+    #     ports:
+    #         - '8080:8080/tcp'
+    #     depends_on:
+    #         - 'db'
+    #     restart: always
+    #     environment:
+    #         HASURA_GRAPHQL_DATABASE_URL: "postgresql://erp:GUIYGUFGUGIUGFUYGFLKJL@35.204.195.124:5432/erp"
+    #         HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+    #         HASURA_GRAPHQL_ADMIN_SECRET: secret
+
+    # mongo:
+    #     image: mongo:latest
+    #     ports:
+    #         - '27017:27017/tcp'
+    #     restart: always
+    #     environment:
+    #         MONGO_INITDB_ROOT_USERNAME: root
+    #         MONGO_INITDB_ROOT_PASSWORD: secret
+
+    # cassandra:
+    #     image: cassandra:latest
+    #     ports:
+    #         - '9042:9042/tcp'
+    #     environment:
+    #         CASSANDRA_USER: root
+    #         CASSANDRA_PASSWORD: secret
+    #     restart: always
