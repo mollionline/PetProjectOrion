@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from . import service
-from .schemas import LightingTypeCreate, LightingCreate
+from .schemas import LightingTypeCreate, LightingCreate, LightingBase
 
 router = APIRouter()
 
@@ -25,6 +25,11 @@ async def light_type_delete(pk: int):
     return await service.delete_light(pk)
 
 
+@router.get("/{lighting_type_id}")
+async def get_lighting_type_by_id(lighting_type_id: int):
+    return await service.get_by_id_lighting_type(lighting_type_id)
+
+
 @router.get('/lightings')
 async def lighting_list():
     return await service.get_lighting_list()
@@ -43,3 +48,8 @@ async def lighting_update(pk: int, item: LightingCreate):
 @router.delete("/{pk}/lighting", status_code=204)
 async def lighting_delete(pk: int):
     return await service.delete_lighting(pk)
+
+
+@router.get("/{lighting_id}")
+async def get_lighting_by_id(lighting_id: int):
+    return await service.get_by_id_lighting(lighting_id)

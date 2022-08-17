@@ -33,6 +33,15 @@ async def delete_light(pk: int):
     return await database.execute(light_type)
 
 
+async def get_by_id_lighting_type(lighting_type_id: int):
+    light_type = lighting_types.select().where(lighting_types.c.id == lighting_type_id)
+    data = await database.fetch_one(light_type)
+    if data is not None:
+        data_lighting_type = LightingTypeBase(name=data.name, watt=data.watt, UUID=data.UUID,
+                                              connection_type=data.connection_type)
+        return data_lighting_type
+
+
 async def get_lighting_list():
     lighting_objects = await database.fetch_all(query=lightings.select())
 
@@ -58,3 +67,12 @@ async def update_lighting(pk: int, item: LightingCreate):
 async def delete_lighting(pk: int):
     lighting = lightings.delete().where((lightings.c.id == pk))
     return await database.execute(lighting)
+
+
+async def get_by_id_lighting(lighting_id: int):
+    lighting = lightings.select().where(lightings.c.id == lighting_id)
+    data = await database.fetch_one(lighting)
+    if data is not None:
+        data_lighting = LightingBase(name=data.name, UUID=data.UUID, status=data.status,
+                                     lighting_type=data.lighting_type)
+        return data_lighting
