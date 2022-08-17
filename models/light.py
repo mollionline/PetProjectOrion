@@ -1,17 +1,45 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from core.utils import get_db
+from fastapi import APIRouter
 from . import service
-from .schemas import LightingTypeCreate
+from .schemas import LightingTypeCreate, LightingCreate
 
 router = APIRouter()
 
 
-@router.get('/')
-def post_list(db: Session = Depends(get_db)):
-    return service.get_light_list(db)
+@router.get('/types')
+async def light_type_list():
+    return await service.get_light_list()
 
 
-@router.post('/')
-def post_list(item: LightingTypeCreate, db: Session = Depends(get_db)):
-    return service.create_light(db, item)
+@router.post('/create')
+async def light_type_create(item: LightingTypeCreate):
+    return await service.create_light(item)
+
+
+@router.put('/update')
+async def light_type_update(pk: int, item: LightingTypeCreate):
+    return await service.update_light(pk, item)
+
+
+@router.delete("/{pk}", status_code=204)
+async def light_type_delete(pk: int):
+    return await service.delete_light(pk)
+
+
+@router.get('/lightings')
+async def lighting_list():
+    return await service.get_lighting_list()
+
+
+@router.post('/create/lighting', status_code=201)
+async def lighting_create(item: LightingCreate):
+    return await service.create_lighting(item)
+
+
+@router.put('/update/lighting')
+async def lighting_update(pk: int, item: LightingCreate):
+    return await service.update_lighting(pk, item)
+
+
+@router.delete("/{pk}/lighting", status_code=204)
+async def lighting_delete(pk: int):
+    return await service.delete_lighting(pk)
