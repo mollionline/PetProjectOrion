@@ -11,24 +11,6 @@
             "realms": [{
                 "name": "ami",
                 "roles": [{
-                        "name": "private",
-                        "permissions": [{
-                            "uri": "",
-                            "match": "prefix",
-                            "allow": {
-                                "call": true,
-                                "register": true,
-                                "publish": true,
-                                "subscribe": true
-                            },
-                            "disclose": {
-                                "caller": false,
-                                "publisher": false
-                            },
-                            "cache": true
-                        }]
-                    },
-                    {
                         "name": "public",
                         "permissions": [{
                             "uri": "",
@@ -57,9 +39,9 @@
                         "port": 8989
                     },
                     "auth": {
-                        "ticket": {
-                            "type": "dynamic",
-                            "authenticator": "com.orionm2m.light.api.v1.auth"
+                        "anonymous": {
+                            "type": "static",
+                            "role": "public"
                         }
                     }
                 },
